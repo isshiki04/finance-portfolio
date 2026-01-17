@@ -1,46 +1,94 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
-import { motion } from 'framer-motion'
-
-export default function App() {
+export default function FinancePortfolio() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-6">
+      {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="max-w-5xl mx-auto text-center py-16"
       >
-        <h1 className="text-4xl font-bold mb-4">Karan Lonare</h1>
-        <p className="text-lg text-slate-400">
-          Finance Graduate | Equity Research | Corporate Finance
-        </p>
+        <h1 className="text-4xl font-bold mb-4 text-white">Karan Lonare</h1>
+        <p className="text-lg text-slate-400">Finance Graduate | Equity Research | Corporate Finance</p>
+        <div className="mt-6 flex justify-center gap-4">
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+            <button className="bg-slate-100 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-white transition">Download Resume</button>
+          </a>
+          <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener noreferrer">
+            <button className="border border-slate-700 text-slate-200 px-6 py-2 rounded-lg hover:bg-slate-800 transition">LinkedIn</button>
+          </a>
+          <a href="mailto:YOUR-EMAIL@gmail.com">
+            <button className="border border-slate-700 text-slate-200 px-6 py-2 rounded-lg hover:bg-slate-800 transition">Email</button>
+          </a>
+        </div>
       </motion.section>
 
-      <section className="max-w-5xl mx-auto mb-12 bg-slate-900 p-6 rounded-2xl">
-        <h2 className="text-2xl font-semibold mb-3">About Me</h2>
-        <p className="text-slate-400">
-          BBA Finance graduate with hands-on experience in equity research,
-          valuation, and financial statement analysis. Actively seeking analyst
-          and finance roles.
-        </p>
+      {/* About */}
+      <section className="max-w-5xl mx-auto mb-12">
+        <Card className="rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-semibold mb-3 text-white">About Me</h2>
+            <p className="text-slate-400 leading-relaxed">
+              I am a BBA Finance graduate with a strong interest in equity research, valuation, and corporate finance. 
+              I have worked on company analysis projects, financial statement analysis, and valuation frameworks, and I am 
+              actively building skills required for core finance and analyst roles.
+            </p>
+          </CardContent>
+        </Card>
+          </a>
       </section>
 
+      {/* Projects */}
       <section className="max-w-5xl mx-auto mb-12">
-        <h2 className="text-2xl font-semibold mb-6">Projects</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-white">Projects (click cards)</h2>
         <div className="grid md:grid-cols-2 gap-6">
-          {["JSW Steel Equity Research", "Stock Valuation (Comps)", "TCS vs Infosys Ratio Analysis"].map(p => (
-            <div key={p} className="bg-slate-900 p-6 rounded-2xl">
-              <h3 className="text-xl font-semibold">{p}</h3>
-              <p className="text-slate-400 mt-2">Finance-focused academic and practical project.</p>
-            </div>
+          {[{
+            title: "Equity Research – JSW Steel",
+            desc: "Company profile, industry overview, and financial ratio analysis."
+          }, {
+            title: "Stock Valuation Project",
+            desc: "Comparable companies analysis and valuation interpretation."
+          }, {
+            title: "Ratio Analysis – TCS vs Infosys",
+            desc: "Final year academic project focusing on profitability and efficiency ratios."
+          }].map((p) => (
+            <a href="#" className="block">
+            <Card key={p.title} className="rounded-2xl bg-slate-900 border border-slate-800 shadow-sm hover:border-slate-600 transition">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-white">{p.title}</h3>
+                <p className="text-slate-400 mt-2">{p.desc}</p>
+              </CardContent>
+            </Card>
+          </a>
           ))}
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto text-center">
-        <h2 className="text-2xl font-semibold mb-4">Contact</h2>
-        <p className="text-slate-400">Open to internships and analyst roles</p>
+      {/* Skills */}
+      <section className="max-w-5xl mx-auto mb-12">
+        <h2 className="text-2xl font-semibold mb-6 text-white">Skills</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {["Financial Analysis", "Equity Research", "Valuation", "MS Excel", "Corporate Finance", "Ratio Analysis"].map(skill => (
+            <Card key={skill} className="rounded-2xl bg-slate-900 border border-slate-800 shadow-sm">
+              <CardContent className="p-4 text-center font-medium text-slate-200">{skill}</CardContent>
+            </Card>
+          </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section className="max-w-5xl mx-auto text-center mb-16">
+        <h2 className="text-2xl font-semibold mb-4 text-white">Contact</h2>
+        <p className="text-slate-400 mb-6">Open to internships and analyst roles. Let’s connect.</p>
+        <a href="mailto:yourname@email.com">
+          <button className="bg-slate-100 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-white">Email Me</button>
+        </a>
       </section>
     </div>
-  )
+  );
 }
