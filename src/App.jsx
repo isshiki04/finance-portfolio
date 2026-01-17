@@ -65,64 +65,59 @@ export default function App() {
 
       {/* PROJECTS */}
       <section className="max-w-5xl mx-auto mb-12">
-        <h2 className="text-2xl font-semibold mb-6 text-white">
-          Projects
-        </h2>
+  <h2 className="text-2xl font-semibold mb-6 text-white">
+    Projects (click to view PDF)
+  </h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {[
-            {
-              title: "Equity Research – JSW Steel",
-              desc: "Company profile, industry overview, and financial ratio analysis."
-            },
-            {
-              title: "Stock Valuation Project",
-              desc: "Comparable companies analysis and valuation interpretation."
-            },
-            {
-              title: "Ratio Analysis – TCS vs Infosys",
-              desc: "Final year academic project focusing on profitability and efficiency ratios."
-            }
-          ].map((p) => (
-            <div
-              key={p.title}
-              className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-slate-600 transition"
-            >
-              <h3 className="text-xl font-semibold text-white">
-                {p.title}
-              </h3>
-              <p className="text-slate-400 mt-2">
-                {p.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+  {/* JSW Steel Project */}
+  <a
+    href="/jsw-steel-report.pdf"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block mb-6"
+  >
+    <div className="rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-600 transition">
+      <div className="p-6">
+        <h3 className="text-xl font-semibold text-white">
+          Equity Research – JSW Steel
+        </h3>
+        <p className="text-slate-400 mt-2">
+          Company profile, industry overview, financial ratio analysis, and key
+          investment insights.
+        </p>
+        <p className="text-slate-500 text-sm mt-3">
+          Click to view full research PDF
+        </p>
+      </div>
+    </div>
+  </a>
 
-      {/* SKILLS */}
-      <section className="max-w-5xl mx-auto mb-12">
-        <h2 className="text-2xl font-semibold mb-6 text-white">
-          Skills
-        </h2>
+  {/* Stock Valuation Project */}
+  <div className="rounded-2xl bg-slate-900 border border-slate-800 mb-6">
+    <div className="p-6">
+      <h3 className="text-xl font-semibold text-white">
+        Stock Valuation Project
+      </h3>
+      <p className="text-slate-400 mt-2">
+        Comparable companies analysis and valuation interpretation.
+      </p>
+    </div>
+  </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            "Financial Analysis",
-            "Equity Research",
-            "Valuation",
-            "MS Excel",
-            "Corporate Finance",
-            "Ratio Analysis"
-          ].map((skill) => (
-            <div
-              key={skill}
-              className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center text-slate-200"
-            >
-              {skill}
-            </div>
-          ))}
-        </div>
-      </section>
+  {/* Ratio Analysis Project */}
+  <div className="rounded-2xl bg-slate-900 border border-slate-800">
+    <div className="p-6">
+      <h3 className="text-xl font-semibold text-white">
+        Ratio Analysis – TCS vs Infosys
+      </h3>
+      <p className="text-slate-400 mt-2">
+        Final year project focusing on profitability, liquidity, and efficiency
+        ratios.
+      </p>
+    </div>
+  </div>
+</section>
+                                        
 
       {/* CONTACT */}
       <section className="max-w-5xl mx-auto text-center mb-16">
