@@ -66,7 +66,7 @@ export default function App() {
       {/* PROJECTS */}
       <section className="max-w-5xl mx-auto mb-12">
   <h2 className="text-2xl font-semibold mb-6 text-white">
-    Projects (click to view PDF)
+    Projects
   </h2>
 
   {/* JSW Steel Project */}
