@@ -20,7 +20,7 @@ export default function App() {
         </p>
 
         <div className="mt-6 flex justify-center gap-4 flex-wrap">
-          <a href="/resume.pdf" target="_blank">
+          <a href="public/resume.pdf" target="_blank">
             <button className="bg-slate-100 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-white transition">
               Download Resume
             </button>
@@ -37,7 +37,11 @@ export default function App() {
             </button>
           </a>
 
-          <a href="karanlonare04@gmail.com">
+          <a
+           href="https://mail.google.com/mail/?view=cm&fs=1&to=karanlonare@gmail.com"
+           target="_blank"
+           rel="noopener noreferrer"
+          >
             <button className="border border-slate-700 text-slate-200 px-6 py-2 rounded-lg hover:bg-slate-800 transition">
               Email
             </button>
@@ -130,7 +134,12 @@ export default function App() {
           Open to internships and analyst roles. Let’s connect.
         </p>
 
-        <a href="mailto:karanlonare04@gmail.com">
+        <a
+         href="https://mail.google.com/mail/?view=cm&fs=1&to=karanlonare@gmail.com"
+         target="_blank"
+         rel="noopener noreferrer"
+        >
+
           <button className="bg-slate-100 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-white transition">
             Email Me
           </button>
