@@ -26,10 +26,12 @@ export default function App() {
             </button>
           </a>
 
-          <a
-            href="https://www.linkedin.com/in/karan-lonare-2a82692a9"
-            target="_blank"
+          <a 
+            href="https://www.linkedin.com/in/karan-lonare-2a82692a9" 
+            target="_blank" 
+            rel="noopener noreferrer"
           >
+
             <button className="border border-slate-700 text-slate-200 px-6 py-2 rounded-lg hover:bg-slate-800 transition">
               LinkedIn
             </button>
