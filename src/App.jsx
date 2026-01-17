@@ -128,7 +128,7 @@ export default function App() {
           Open to internships and analyst roles. Let’s connect.
         </p>
 
-        <a href="mailto:YOUR-EMAIL@gmail.com">
+        <a href="mailto:karanlonare04@gmail.com">
           <button className="bg-slate-100 text-slate-900 px-6 py-2 rounded-lg font-medium hover:bg-white transition">
             Email Me
           </button>
