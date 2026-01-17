@@ -27,7 +27,7 @@ export default function App() {
           </a>
 
           <a
-            href="https://www.linkedin.com/in/YOUR-LINKEDIN"
+            href="www.linkedin.com/in/karan-lonare-2a82692a9"
             target="_blank"
           >
             <button className="border border-slate-700 text-slate-200 px-6 py-2 rounded-lg hover:bg-slate-800 transition">
@@ -35,7 +35,7 @@ export default function App() {
             </button>
           </a>
 
-          <a href="mailto:YOUR-EMAIL@gmail.com">
+          <a href="mailto:karanlonare04@gmail.com">
             <button className="border border-slate-700 text-slate-200 px-6 py-2 rounded-lg hover:bg-slate-800 transition">
               Email
             </button>
