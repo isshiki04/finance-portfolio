@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karan Lonare — Finance Analyst</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050A14;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --text: #E8EDF5;
+    --muted: #7A8BA0;
+    --accent1: #3B82F6;
+    --accent2: #8B5CF6;
+    --accent3: #06B6D4;
+    --green: #10B981;
+    --red: #EF4444;
+    --gold: #F59E0B;
+    --grad: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #06B6D4 100%);
+    --grad2: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; cursor: none; }
+
+  .cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; background: var(--accent1); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.15s ease, background 0.3s; mix-blend-mode: screen; }
+  .cursor-ring { position: fixed; top: 0; left: 0; width: 36px; height: 36px; border: 1.5px solid rgba(139,92,246,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transition: transform 0.35s cubic-bezier(.25,.46,.45,.94); }
+
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
+
+  /* Ticker */
+  .ticker-wrap { position: fixed; top: 0; left: 0; right: 0; z-index: 600; height: 28px; background: rgba(5,10,20,0.97); border-bottom: 1px solid rgba(16,185,129,0.15); overflow: hidden; display: flex; align-items: center; }
+  .ticker-track { display: flex; white-space: nowrap; animation: ticker 32s linear infinite; }
+  .ticker-item { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0 1.5rem; font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.04em; color: var(--muted); border-right: 1px solid var(--border); }
+  .ticker-item .up { color: var(--green); }
+  .ticker-item .down { color: var(--red); }
+  .ticker-sym { color: var(--text); font-weight: 500; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Nav */
+  nav { position: fixed; top: 28px; left: 0; right: 0; z-index: 500; padding: 1.1rem 3rem; display: flex; justify-content: space-between; align-items: center; background: rgba(5,10,20,0.75); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.3rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.3s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--grad); transform: scaleX(0); transform-origin: right; transition: transform 0.3s ease; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* Hero */
+  .hero { min-height: 100vh; display: grid; place-items: center; padding: 9rem 3rem 4rem; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(59,130,246,0.10) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 30%, rgba(139,92,246,0.08) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 50% 90%, rgba(6,182,212,0.06) 0%, transparent 60%); }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(16,185,129,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.04) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 0%, transparent 80%); }
+  #candleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.15; }
+  .sparkline { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; pointer-events: none; }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; text-align: center; }
+
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; border: 1px solid rgba(59,130,246,0.3); border-radius: 100px; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent1); background: rgba(59,130,246,0.08); margin-bottom: 2rem; animation: fadeUp 0.8s ease both; }
+  .badge-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  .hero-name { font-family: 'Playfair Display', serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; line-height: 1.0; letter-spacing: -0.02em; margin-bottom: 0.5rem; animation: fadeUp 0.9s 0.1s ease both; }
+  .name-gradient { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--muted); margin-bottom: 1.5rem; animation: fadeUp 0.9s 0.2s ease both; }
+  .hero-desc { font-size: 1rem; line-height: 1.8; color: var(--muted); max-width: 600px; margin: 0 auto 2.5rem; animation: fadeUp 0.9s 0.3s ease both; }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.9s 0.4s ease both; }
+
+  .btn { padding: 0.75rem 1.75rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-primary { background: var(--grad); color: white; border: none; box-shadow: 0 0 30px rgba(59,130,246,0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(59,130,246,0.5); }
+  .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent2); background: rgba(139,92,246,0.08); transform: translateY(-2px); }
+
+  .hero-stats { display: flex; gap: 3rem; justify-content: center; margin-top: 4rem; animation: fadeUp 0.9s 0.5s ease both; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+  /* P&L strip */
+  .pnl-strip { max-width: 1100px; margin: 0 auto; display: flex; justify-content: center; gap: 2.5rem; padding: 1.25rem 3rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(16,185,129,0.02); }
+  .pnl-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .pnl-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .pnl-val { font-family: 'DM Mono', monospace; font-size: 0.8rem; font-weight: 500; }
+  .pnl-val.up { color: var(--green); }
+  .pnl-val.down { color: var(--red); }
+  .pnl-val.neutral { color: var(--muted); }
+
+  /* Sections */
+  section { padding: 6rem 3rem; max-width: 1100px; margin: 0 auto; }
+  .section-label { display: flex; align-items: center; gap: 1rem; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--accent3); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+  .section-label::before { content: ''; flex: 0 0 30px; height: 1px; background: var(--accent3); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; line-height: 1.1; margin-bottom: 3rem; }
+
+  /* Skills */
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .skill-tag { padding: 0.5rem 1.1rem; border-radius: 100px; font-size: 0.82rem; font-weight: 500; border: 1px solid var(--border); background: var(--surface); color: var(--text); transition: all 0.3s; cursor: default; }
+  .skill-tag:hover { border-color: var(--accent1); background: rgba(59,130,246,0.1); color: var(--accent1); transform: translateY(-2px); }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0.75rem; }
+  .timeline-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; transition: all 0.3s ease; }
+  .timeline-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--grad); border-radius: 3px 0 0 3px; }
+  .timeline-card:hover { border-color: rgba(59,130,246,0.3); background: rgba(255,255,255,0.06); transform: translateX(4px); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .card-org { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+  .card-date { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--accent3); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); padding: 0.25rem 0.75rem; border-radius: 100px; }
+  .card-role { font-size: 0.9rem; color: var(--accent2); margin-bottom: 1rem; font-weight: 500; }
+  .card-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .card-bullets li { padding-left: 1.25rem; position: relative; font-size: 0.9rem; line-height: 1.7; color: var(--muted); }
+  .card-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--accent1); font-size: 0.8rem; }
+
+  /* Projects */
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+  .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; transition: all 0.35s ease; }
+  .project-card::after { content: ''; position: absolute; inset: 0; background: var(--grad); opacity: 0; transition: opacity 0.35s; border-radius: 16px; }
+  .project-card:hover::after { opacity: 0.05; }
+  .project-card:hover { border-color: rgba(139,92,246,0.4); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .project-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--grad); display: grid; place-items: center; font-size: 1.2rem; margin-bottom: 1.25rem; }
+  .project-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .project-date { font-size: 0.72rem; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 1rem; }
+  .project-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .project-bullets li { font-size: 0.85rem; line-height: 1.65; color: var(--muted); padding-left: 1rem; position: relative; }
+  .project-bullets li::before { content: '·'; position: absolute; left: 0; color: var(--accent2); font-size: 1.2rem; line-height: 1.2; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+  .project-tag { font-size: 0.7rem; font-family: 'DM Mono', monospace; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(139,92,246,0.12); color: var(--accent2); border: 1px solid rgba(139,92,246,0.2); }
+
+  /* Education */
+  .edu-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem; transition: all 0.3s; }
+  .edu-card:hover { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.03); }
+  .edu-school { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .edu-degree { color: var(--accent3); font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .edu-location { font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem; }
+  .edu-courses { font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+  .edu-gpa { text-align: right; }
+  .gpa-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900; background: var(--grad2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .gpa-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .edu-year { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--gold); margin-top: 0.5rem; }
+
+  /* Certs */
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .cert-card { border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; background: var(--surface); display: flex; gap: 1rem; align-items: flex-start; transition: all 0.3s; }
+  .cert-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-2px); }
+  .cert-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 8px; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); display: grid; place-items: center; font-size: 1rem; }
+  .cert-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+  .cert-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+  /* Contact */
+  .contact-section { text-align: center; padding: 6rem 3rem 8rem; position: relative; }
+  .contact-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 70%); pointer-events: none; }
+  .contact-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2.5rem; position: relative; z-index: 2; }
+  .contact-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: 10px; color: var(--muted); text-decoration: none; font-size: 0.9rem; background: var(--surface); transition: all 0.3s; }
+  .contact-link:hover { border-color: var(--accent1); color: var(--text); background: rgba(59,130,246,0.08); transform: translateY(-2px); }
+
+  footer { border-top: 1px solid var(--border); padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; color: var(--muted); }
+  .footer-name { font-family: 'Playfair Display', serif; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .section-divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 0 3rem; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; top: 28px; }
+    .nav-links { gap: 1rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    .edu-card { grid-template-columns: 1fr; }
+    .edu-gpa { text-align: left; }
+    .contact-section { padding: 4rem 1.5rem 6rem; }
+    footer { padding: 1.5rem; }
+    .pnl-strip { gap: 1.25rem; flex-wrap: wrap; padding: 1rem 1.5rem; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Ticker -->
+<div class="ticker-wrap"><div class="ticker-track" id="ticker"></div></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">KL</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="about">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <canvas id="candleCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="badge-dot"></span>Open to Opportunities · Finance Analyst</div>
+    <h1 class="hero-name"><span class="name-gradient">Karan</span><br>Lonare</h1>
+    <p class="hero-title">Financial Analyst & Valuation Specialist</p>
+    <p class="hero-desc">Finance major with hands-on experience in financial statement analysis, equity valuation, and cost modeling. Pursuing NISM Research Analyst certification with a focus on capital markets and project finance.</p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">View My Work ↓</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Financial KPIs Tracked</div></div>
+      <div class="stat"><div class="stat-num">5yr</div><div class="stat-label">Analysis Depth</div></div>
+      <div class="stat"><div class="stat-num">₹1L+cr</div><div class="stat-label">Firms Analyzed</div></div>
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">Peer Comps Modeled</div></div>
+    </div>
+  </div>
+  <svg class="sparkline" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#10B981" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path id="sparkPath" fill="url(#sparkGrad)" stroke="none"/>
+    <path id="sparkLine" fill="none" stroke="#10B981" stroke-width="1.5" opacity="0.45"/>
+  </svg>
+</section>
+
+<!-- P&L strip -->
+<div class="pnl-strip">
+  <div class="pnl-item"><span class="pnl-label">NPM</span><span class="pnl-val up">▲ 18.4%</span></div>
+  <div class="pnl-item"><span class="pnl-label">EV/EBITDA</span><span class="pnl-val neutral">22.3x</span></div>
+  <div class="pnl-item"><span class="pnl-label">ROE</span><span class="pnl-val up">▲ 42.1%</span></div>
+  <div class="pnl-item"><span class="pnl-label">P/E Ratio</span><span class="pnl-val neutral">31.5x</span></div>
+  <div class="pnl-item"><span class="pnl-label">P/B</span><span class="pnl-val up">▲ 12.8x</span></div>
+  <div class="pnl-item"><span class="pnl-label">DTR</span><span class="pnl-val down">▼ 8.2x</span></div>
+  <div class="pnl-item"><span class="pnl-label">OPM</span><span class="pnl-val up">▲ 25.6%</span></div>
+</div>
+
+<!-- Competencies -->
+<section id="competencies">
+  <div class="section-label">Core Competencies</div>
+  <h2 class="section-title reveal">What I Bring<br><em style="font-style:italic;color:var(--muted)">to the table</em></h2>
+  <div class="skills-grid reveal reveal-delay-1">
+    <span class="skill-tag">Financial Statement Analysis</span>
+    <span class="skill-tag">Ratio Analysis (7 KPIs)</span>
+    <span class="skill-tag">Equity Valuation</span>
+    <span class="skill-tag">Comparable Company Analysis</span>
+    <span class="skill-tag">DCF Modeling</span>
+    <span class="skill-tag">Cost & Variance Analysis</span>
+    <span class="skill-tag">CAPEX / OPEX Modeling</span>
+    <span class="skill-tag">MS Excel (Advanced)</span>
+    <span class="skill-tag">Competitor Research</span>
+    <span class="skill-tag">Market Analysis</span>
+    <span class="skill-tag">Operations Coordination</span>
+    <span class="skill-tag">Stakeholder Communication</span>
+    <span class="skill-tag">Investment Memo Writing</span>
+    <span class="skill-tag">P/E · EV/EBITDA · P/B Multiples</span>
+    <span class="skill-tag">PowerPoint · Word</span>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Experience -->
+<section id="experience">
+  <div class="section-label">Work Experience</div>
+  <h2 class="section-title reveal">Professional<br><em style="font-style:italic;color:var(--muted)">Journey</em></h2>
+  <div class="timeline">
+    <div class="timeline-card reveal">
+      <div class="card-header">
+        <div class="card-org">Reliable Cars</div>
+        <div class="card-date">Mar 2024 – May 2024</div>
+      </div>
+      <div class="card-role">Business & Market Analysis Intern · Nagpur</div>
+      <ul class="card-bullets">
+        <li>Benchmarked 5 competing dealerships on pricing and positioning — identified 2 demand gaps that reshaped the sales team's pitch strategy.</li>
+        <li>Built an Excel-based engagement tracker for 10+ weekly customer interactions; surfaced a 20% conversion drop, prompting a revised outreach protocol.</li>
+        <li>Created a 3-segment competitor pricing matrix that cut management's market-review time by ~40% per cycle.</li>
+      </ul>
+    </div>
+    <div class="timeline-card reveal reveal-delay-1">
+      <div class="card-header">
+        <div class="card-org">DAIMSR — RTMNU</div>
+        <div class="card-date">Aug 2023 – Apr 2024</div>
+      </div>
+      <div class="card-role">Class Representative · Leadership Role</div>
+      <ul class="card-bullets">
+        <li>Coordinated academics for a 60-student cohort across 8 subjects; organised 3 events for 100+ attendees.</li>
+        <li>Demonstrated project management and stakeholder coordination at institutional scale.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Projects -->
+<section id="projects">
+  <div class="section-label">Finance Projects</div>
+  <h2 class="section-title reveal">Analytical<br><em style="font-style:italic;color:var(--muted)">Work</em></h2>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-icon">📊</div>
+      <div class="project-title">Comparative Financial Analysis — TCS vs. Infosys</div>
+      <div class="project-date">January 2025</div>
+      <ul class="project-bullets">
+        <li>Computed 7 financial ratios across 5 years of audited data for two ₹1L+ crore firms.</li>
+        <li>Quantified TCS's 15% shorter collection cycle vs. Infosys FY23.</li>
+        <li>Delivered a 20-slide structured presentation identifying margin compression trends.</li>
+      </ul>
+      <div class="project-tags">
+        <span class="project-tag">NPM · OPM · ROE · ROA</span>
+        <span class="project-tag">5-Year Analysis</span>
+        <span class="project-tag">Excel</span>
+      </div>
+    </div>
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-icon">📈</div>
+      <div class="project-title">Stock Valuation via Comparable Companies Analysis (CCA)</div>
+      <div class="project-date">September 2023</div>
+      <ul class="project-bullets">
+        <li>Ran CCA across 6–8 peer firms using 3–5 years of data via P/E, EV/EBITDA, EV/Sales, and P/B multiples.</li>
+        <li>Quantified an ~2x EV/EBITDA spread supporting a data-driven buy/hold thesis.</li>
+        <li>Structured output as an investment memo for management decision-making.</li>
+      </ul>
+      <div class="project-tags">
+        <span class="project-tag">P/E · EV/EBITDA · P/B</span>
+        <span class="project-tag">Peer Comps</span>
+        <span class="project-tag">Investment Memo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Education -->
+<section id="education">
+  <div class="section-label">Education</div>
+  <h2 class="section-title reveal">Academic<br><em style="font-style:italic;color:var(--muted)">Foundation</em></h2>
+  <div class="edu-card reveal">
+    <div>
+      <div class="edu-school">Dr. Ambedkar Institute of Management Studies & Research</div>
+      <div class="edu-degree">BBA, Finance Major · RTMNU</div>
+      <div class="edu-location">📍 Nagpur, Maharashtra</div>
+      <div class="edu-year">2022 – 2025</div>
+      <div class="edu-courses" style="margin-top:1rem;">
+        <strong style="color:var(--muted);font-size:0.72rem;letter-spacing:0.05em;text-transform:uppercase;">Coursework</strong><br>
+        Financial Statement Analysis · Advanced Financial Management · M&A · Options, Futures & Derivatives · Econometrics · Investments
+      </div>
+    </div>
+    <div class="edu-gpa">
+      <div class="gpa-num">7.30</div>
+      <div class="gpa-label">GPA / 10</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Certs -->
+<section id="certifications">
+  <div class="section-label">Certifications & Development</div>
+  <h2 class="section-title reveal">Continuous<br><em style="font-style:italic;color:var(--muted)">Learning</em></h2>
+  <div class="certs-grid">
+    <div class="cert-card reveal">
+      <div class="cert-icon">🏛️</div>
+      <div>
+        <div class="cert-name">NISM Series XV — Research Analyst</div>
+        <div class="cert-desc">Indian capital markets regulatory qualification. Currently appearing for certification from SEBI.</div>
+      </div>
+    </div>
+    <div class="cert-card reveal reveal-delay-1">
+      <div class="cert-icon">🏦</div>
+      <div>
+        <div class="cert-name">JP Morgan Virtual Internship (Forage)</div>
+        <div class="cert-desc">Equity research and financial analysis simulation modules with real-world investment workflows.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- Contact -->
+<section class="contact-section" id="contact">
+  <div class="contact-glow"></div>
+  <div class="section-label" style="justify-content:center;">Contact</div>
+  <h2 class="section-title reveal" style="font-size:clamp(2rem,5vw,4rem);">Let's Connect</h2>
+  <p class="reveal" style="color:var(--muted);max-width:480px;margin:0 auto;line-height:1.8;font-size:0.95rem;">Actively seeking opportunities in finance, equity research, and project finance. Open to internships, full-time roles, and collaborations.</p>
+  <div class="contact-links reveal">
+    <a href="mailto:karanlonare04@gmail.com" class="contact-link">✉️ karanlonare04@gmail.com</a>
+    <a href="tel:+919689171707" class="contact-link">📱 +91 9689171707</a>
+    <a href="https://linkedin.com/in/karan-lonare-2a82692a9" target="_blank" rel="noopener" class="contact-link">🔗 LinkedIn</a>
+    <a href="https://maps.google.com/?q=Nagpur,Maharashtra,India" target="_blank" rel="noopener" class="contact-link">📍 Nagpur, MH</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 <span class="footer-name">Karan Lonare</span></span>
+  <span style="font-family:'DM Mono',monospace;font-size:0.72rem;">Finance · Valuation · Analysis</span>
+</footer>
+
+<script>
+/* Ticker */
+const tickers = [
+  {sym:'TCS',price:'4,218.50',chg:'+1.2%',up:true},{sym:'INFY',price:'1,832.75',chg:'-0.4%',up:false},
+  {sym:'NIFTY50',price:'22,456.80',chg:'+0.7%',up:true},{sym:'SENSEX',price:'73,847.15',chg:'+0.6%',up:true},
+  {sym:'RELIANCE',price:'2,941.30',chg:'+0.3%',up:true},{sym:'HDFCBANK',price:'1,623.45',chg:'-0.2%',up:false},
+  {sym:'WIPRO',price:'472.60',chg:'+1.8%',up:true},{sym:'BAJFINANCE',price:'6,832.00',chg:'+2.1%',up:true},
+  {sym:'ICICIBANK',price:'1,089.90',chg:'-0.5%',up:false},{sym:'MARUTI',price:'12,340.00',chg:'+0.9%',up:true},
+];
+const track = document.getElementById('ticker');
+[...tickers,...tickers].forEach(t => {
+  const el = document.createElement('span');
+  el.className = 'ticker-item';
+  el.innerHTML = `<span class="ticker-sym">${t.sym}</span>${t.price} <span class="${t.up?'up':'down'}">${t.chg}</span>`;
+  track.appendChild(el);
+});
+
+/* Candlestick canvas */
+const canvas = document.getElementById('candleCanvas');
+const ctx = canvas.getContext('2d');
+function drawCandles() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const W = canvas.width, H = canvas.height;
+  const cols = Math.floor(W / 30);
+  for (let i = 0; i < cols; i++) {
+    const x = i * 30 + 15;
+    const open  = H * 0.25 + Math.random() * H * 0.45;
+    const close = open + (Math.random() - 0.5) * H * 0.13;
+    const high  = Math.min(open, close) - Math.random() * H * 0.07;
+    const low   = Math.max(open, close) + Math.random() * H * 0.07;
+    const bull  = close < open;
+    ctx.strokeStyle = bull ? '#10B981' : '#EF4444';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, high); ctx.lineTo(x, low); ctx.stroke();
+    ctx.fillStyle = bull ? 'rgba(16,185,129,0.55)' : 'rgba(239,68,68,0.55)';
+    ctx.fillRect(x - 5, Math.min(open,close), 10, Math.abs(close-open)||2);
+  }
+}
+drawCandles();
+window.addEventListener('resize', drawCandles);
+
+/* Sparkline */
+function buildSparkline() {
+  const W = window.innerWidth;
+  let y = 95, points = [];
+  for (let i = 0; i <= 45; i++) {
+    y = Math.max(8, Math.min(112, y + (Math.random() - 0.42) * 13));
+    points.push({x:(i/45)*W, y});
+  }
+  const line = points.map((p,i)=>`${i===0?'M':'L'}${p.x},${p.y}`).join(' ');
+  document.getElementById('sparkLine').setAttribute('d', line);
+  document.getElementById('sparkPath').setAttribute('d', line+` L${W},120 L0,120 Z`);
+}
+buildSparkline();
+window.addEventListener('resize', buildSparkline);
+
+/* Scroll reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* Cursor */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cursor.style.transform=`translate(${mx-6}px,${my-6}px)`;
+});
+(function animRing(){
+  rx += (mx-rx-18)*0.12; ry += (my-ry-18)*0.12;
+  ring.style.transform=`translate(${rx}px,${ry}px)`;
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,.skill-tag,.timeline-card,.project-card,.cert-card').forEach(el => {
+  el.addEventListener('mouseenter',()=>{ cursor.style.background='var(--accent2)'; });
+  el.addEventListener('mouseleave',()=>{ cursor.style.background='var(--accent1)'; });
+});
+
+/* Active nav */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur='';
+  sections.forEach(s=>{ if(window.scrollY>=s.offsetTop-200) cur=s.id; });
+  navLinks.forEach(a=>{ a.style.color=a.getAttribute('href')==='#'+cur?'var(--text)':''; });
+});
+</script>
+</body>
+</html>
